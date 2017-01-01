@@ -1,0 +1,28 @@
+1.
+Decreasing the convergence tolerance increases the number of iterations required to achieve convergence. It also may prevent the algorithm from ever converging. Unless precision is vital for the task, a higher convergence tolerance will get the job done while ensuring that the algorithm converges in reasonable time.
+
+2.
+The beta that solves this problem is the Least Absolute Deviation (LAD) estimator, which is a special case of linear quantile regression where we are calculating the 50% (median) quantile. It can be found using the Iteratively Reweighted Least Squares (IRLS) algorithm. 
+
+n = len(y) + 1
+b0 = 1.0
+w = [1] * n
+b1 = 2.0
+while abs(b1 - b0) > 10**(-4):
+    b0 = b1
+    b1 = sum([w * x * y for w, x, y in zip(w, x, y)]) / sum([w * x**2 for w, x in zip(w, x)])
+    w = [1 / max(0.0001, abs(y - x * b1)) for x, y in zip(x, y)]
+print(b1)
+
+We are interested in the time complexity as a function of the length of the vectors x and y. The time complexity of each multiplication and division operation scales with the size of the numbers (in bits) being multiplied and divided, but it doesn’t scale with the length of the vectors x and y. Summing the terms in the numerator is O(n), and summing the terms in the denominator is also O(n). Summing the top and the bottom and then combining them is therefore an O(n) operation. Similarly, computing each element of w is an O(n) operation. The number of iterations until convergence does not scale with n, so this doesn’t factor into the time complexity either. Hence, the algorithm is O(n) in the length of the vectors x and y.
+
+Notably, there is a more efficient way to code this up. One could transform the problem into a linear programming problem as in Barrodale and Roberts (1973) and then apply the simplex algorithm. This would result in an exact solution and would be faster, but would be more work to code up.
+
+————————————
+
+Hi,
+
+I'm excited about the possibility of working as a machine learning software engineer at databricks. I specifically reached out to you because I'm really excited about the work you’re doing to make data science easier via cloud-based big data processing. I'm a data scientist with PhD-level statistical expertise, an in-depth knowledge of ML and NLP, full-stack programming experience, experience working with engineers on implementation, and practical business knowledge. I have a history of driving projects to completion and I look forward to applying my skills at databricks.
+
+Thanks,
+Joe Silverstein
